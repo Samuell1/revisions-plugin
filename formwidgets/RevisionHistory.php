@@ -64,7 +64,8 @@ class RevisionHistory extends FormWidgetBase
      public function onRevertHistory()
      {
         // dynamic load model class
-        $section = Order::find($this->model->id);
+        $modelClass = $this->getClass();
+        $section = $modelClass::find($this->model->id);
 
         $revision = Revision::find(Input::get('revision_id'));
 
@@ -74,5 +75,10 @@ class RevisionHistory extends FormWidgetBase
         Flash::success('Changes have been restored, changes are not visible without restoring the page.');
 
         // TODO REFRESH PAGE
+     }
+
+     private function getClass()
+     {
+         return get_class($this->model);
      }
 }
