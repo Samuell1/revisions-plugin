@@ -1,0 +1,49 @@
+<div class="revision_history">
+    <ul>
+        <?php foreach ($history->reverse() as $record): ?>
+        <li>
+            <a data-toggle="modal" href="#history-revision-<?php echo $record['id']?>">
+            <i class="list-icon icon-terminal"></i>
+            <span class="title"><?php echo $record->created_at->format('d. m. Y H:i') ?></span>
+            <span class="description-user">
+                <?php if ($record->user) { ?>
+                    <?php echo $record->user->first_name ?> <?php echo $record->user->last_name ?>
+                <?php }else{ ?>
+                    System
+                <?php } ?>
+            </span>
+            <span class="description">
+                <?php echo $record->field ?>:
+                <del><?php echo $record->old_value ?></del>
+                <ins><?php echo $record->new_value ?></ins>
+            </span>
+            <span class="borders"></span>
+            </a>
+
+            <div class="control-popup modal fade" id="history-revision-<?php echo $record->id ?>" tabindex="-1" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Obnoviť zmenu</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div><?php if ($record->user) { ?><?php echo $record->user->first_name ?> <?php echo $record->user->last_name ?> <?php }else{ ?>System<?php } ?></div>
+                            <b><?php echo $record->field ?>:</b>
+                            <del><?php echo $record->old_value ?></del> <ins><?php echo $record->new_value ?></ins>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary"
+                            data-request="onRevertHistory"
+                            data-request-data="revision_id: <?php echo $record->id ?>"
+                            data-request-flash
+                            data-dismiss="modal">Obnoviť zmenu</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Zrušiť</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+</div>

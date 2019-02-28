@@ -1,0 +1,74 @@
+// out: ./revisionhistory.css, compress: true, sourceMap: false, autoprefixer: last 5 versions, groupmedia: true
+.revision_history {
+  ul {
+    padding: 0;
+    margin: 0;
+    li {
+      font-weight: normal;
+      line-height: 150%;
+      position: relative;
+      list-style: none;
+    }
+  }
+  a {
+    padding: 11px 45px 10px 50px;
+    font-size: 13px;
+    border-bottom: 1px solid #ecf0f1;
+    display: block;
+    &:hover {
+      background: #f5f5f5;
+      text-decoration: none;
+    }
+  }
+}
+
+a:focus {
+  background: #f5f5f5;
+  text-decoration: none;
+}
+
+.revision_history {
+  i {
+    position: absolute;
+    left: 14px;
+    top: 15px;
+    font-size: 22px;
+    color: #b7c0c2;
+  }
+  .title {
+    font-size: 14px;
+    font-weight: normal;
+    color: #2b3e50;
+    display: block;
+  }
+  .description {
+    color: #8f8f8f;
+    font-size: 12px;
+    white-space: nowrap;
+    font-weight: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+  .description-user {
+    color: #444444;
+    font-weight: bold;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+  del {
+    color: #000;
+    text-decoration: none;
+    border: 1px solid rgb(255, 192, 192);
+    background: rgb(255, 224, 224);
+  }
+  ins {
+    color: #000;
+    text-decoration: none;
+    border: 1px solid rgb(192, 255, 192);
+    background: rgb(224, 255, 224);
+  }
+}
