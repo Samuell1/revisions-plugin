@@ -7,7 +7,7 @@
                 <span class="title"><?= $record->created_at->format('d. m. Y H:i') ?></span>
                 <span class="description-user">
                     <?php if ($record->user) { ?>
-                        <?= e($record->user->first_name) ?> <?= $record->user->last_name) ?>
+                        <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
                     <?php }else{ ?>
                         System
                     <?php } ?>
