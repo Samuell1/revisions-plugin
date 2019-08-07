@@ -6,8 +6,10 @@ use Exception;
 /**
  * Extend model with revision methods
  */
-trait RevisionModel
+trait Revisions
 {
+    use \October\Rain\Database\Traits\Revisionable;
+
     public static function bootRevisionable()
     {
         if (!property_exists(get_called_class(), 'revisionable')) {
