@@ -2,7 +2,7 @@
     <ul>
         <?php foreach ($history as $record) { ?>
         <li>
-            <a data-toggle="modal" href="#history-revision-<?= $record['id']?>">
+            <a data-toggle="modal" href="#history-revision-<?= $record->id ?>">
                 <i class="list-icon icon-terminal"></i>
                 <span class="title"><?= $record->created_at->format('d. m. Y H:i') ?></span>
                 <span class="description-user">
@@ -13,7 +13,7 @@
                     <?php } ?>
                 </span>
                 <span class="description">
-                    <?= e($record->field) ?>:
+                    <?= e(trans($record->field)) ?>:
                     <del><?= e($record->old_value) ?></del>
                     <ins><?= e($record->new_value) ?></ins>
                 </span>
@@ -29,15 +29,18 @@
                             <h4 class="modal-title">Restore change</h4>
                         </div>
                         <div class="modal-body">
-                            <div>
+                            <p>
                                 <?php if ($record->user) { ?>
                                     <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
                                 <?php } else { ?>
                                     System
                                 <?php } ?>
-                            </div>
-                            <b><?= e($record->field) ?>:</b>
-                            <del><?= e($record->old_value) ?></del> <ins><?= e($record->new_value) ?></ins>
+                            </p>
+                            <h5><?= e(trans($record->field)) ?>:</h5>
+                            <p>
+                                <del><?= e($record->old_value) ?></del>
+                                <ins><?= e($record->new_value) ?></ins>
+                            </p>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" data-request="onRevertHistory"
