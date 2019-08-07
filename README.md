@@ -1,1 +1,29 @@
-# oc-modelrevisions
+# Revisions
+
+Revisions allows to extend any model with Revisionable trait with more features and easy to use.
+
+
+## Usage
+
+Extending model with Revisions trait.
+```
+class MyModel {
+    use \Samuell\Revisions\Traits\Revisions;
+
+    /**
+     * @var array Monitor these attributes for changes.
+     */
+    protected $revisionable = ['name', 'email'];
+
+}
+```
+
+Adding new widget to our form config
+
+```
+history:
+    label: History of changes
+    span: full
+    disabled: true
+    type: Samuell\Revisions\FormWidgets\RevisionHistory
+```
