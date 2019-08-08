@@ -24,6 +24,11 @@ class RevisionHistory extends FormWidgetBase
     public function prepareVars()
     {
         $this->vars['history'] = $this->model->revision_history->reverse();
+        $this->vars['getFieldName'] = function ($fieldName) {
+            $fields = $this->parentForm->getFields();
+            $field = $fields[$fieldName];
+            return $field->label ?? $field->tab ?? $fieldName;
+        };
     }
 
     public function loadAssets()

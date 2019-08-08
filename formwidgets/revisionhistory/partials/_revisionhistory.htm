@@ -16,6 +16,7 @@
                     <?= e(trans($record->field)) ?>:
                     <del><?= e($record->old_value) ?></del>
                     <ins><?= e($record->new_value) ?></ins>
+                    <?= e(trans($getFieldName($record->field))) ?>:
                 </span>
                 <span class="borders"></span>
             </a>
@@ -36,7 +37,7 @@
                                     System
                                 <?php } ?>
                             </p>
-                            <h5><?= e(trans($record->field)) ?>:</h5>
+                            <h5><?= e(trans($getFieldName($record->field))) ?>:</h5>
                             <p>
                                 <del><?= e($record->old_value) ?></del>
                                 <ins><?= e($record->new_value) ?></ins>
