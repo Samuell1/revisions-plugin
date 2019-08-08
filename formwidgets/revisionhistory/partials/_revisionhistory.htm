@@ -13,10 +13,8 @@
                     <?php } ?>
                 </span>
                 <span class="description">
-                    <?= e(trans($record->field)) ?>:
-                    <del><?= e($record->old_value) ?></del>
-                    <ins><?= e($record->new_value) ?></ins>
                     <?= e(trans($getFieldName($record->field))) ?>:
+                    <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($record->old_value), e($record->new_value)) ?>
                 </span>
                 <span class="borders"></span>
             </a>
@@ -39,8 +37,7 @@
                             </p>
                             <h5><?= e(trans($getFieldName($record->field))) ?>:</h5>
                             <p>
-                                <del><?= e($record->old_value) ?></del>
-                                <ins><?= e($record->new_value) ?></ins>
+                                <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($record->old_value), e($record->new_value)) ?>
                             </p>
                         </div>
                         <div class="modal-footer">
