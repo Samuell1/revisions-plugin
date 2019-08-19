@@ -1,0 +1,17 @@
+{
+    "name": "samuell/revisions-plugin",
+    "type": "october-plugin",
+    "description": "Revisions allows to extend any model with Revisionable trait with more features and easy to use.",
+    "license": "MIT",
+    "homepage": "https://github.com/Samuell1/revisions-plugin",
+    "keywords": ["revisions", "changes", "octobercms"],
+    "authors": [
+        {
+            "name": "Samuell"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "composer/installers": "~1.0"
+    }
+}
