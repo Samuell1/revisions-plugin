@@ -27,5 +27,5 @@ history:
     label: History of changes
     span: full
     disabled: true
-    type: revisionhistory
+    type: Samuell\Revisions\FormWidgets\RevisionHistory
 ```
