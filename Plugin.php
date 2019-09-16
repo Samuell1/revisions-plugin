@@ -53,7 +53,7 @@ class Plugin extends PluginBase
     public function registerFormWidgets()
     {
         return [
-            'Samuell\Revisions\RevisionHistory' => 'revisionhistory',
+            'Samuell\Revisions\FormWidgets\RevisionHistory' => 'revisionhistory',
         ];
     }
 }
