@@ -26,8 +26,11 @@ class RevisionHistory extends FormWidgetBase
         $this->vars['history'] = $this->model->revision_history->reverse();
         $this->vars['getFieldName'] = function ($fieldName) {
             $fields = $this->parentForm->getFields();
-            $field = $fields[$fieldName];
-            return $field->label ?? $field->tab ?? $fieldName;
+            if (array_key_exists($fieldName, $fields)) {
+                $field = $fields[$fieldName];
+                return $field->label ?? $field->tab ?? $fieldName;
+            }
+            return $fieldName;
         };
     }
 
