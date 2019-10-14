@@ -23,7 +23,12 @@ class RevisionHistory extends FormWidgetBase
 
     public function prepareVars()
     {
-        $this->vars['history'] = $this->model->revision_history->reverse();
+        $revisionHistory = $this->model->revision_history->reverse();
+        $histories = [];
+        foreach ($revisionHistory as $history) {
+            $histories[$history->created_at . $history->user_id][] = $history;
+        }
+        $this->vars['histories'] = $histories;
         $this->vars['getFieldName'] = function ($fieldName) {
             $fields = $this->parentForm->getFields();
             if (array_key_exists($fieldName, $fields)) {
@@ -51,8 +56,12 @@ class RevisionHistory extends FormWidgetBase
         $section = $modelClass::find($this->model->id);
 
         $revision = Revision::find(input('revision_id'));
+        $revisions = Revision::where('user_id', $revision->user_id)->where('created_at', $revision->created_at)->get();
 
-        $section->{$revision->field} = $revision->old_value;
+        foreach ($revisions as $revision) {
+            $section->{$revision->field} = $revision->old_value;
+        }
+
         $section->save();
 
         Flash::success('Changes have been restored, changes are not visible without refreshing the page.');
