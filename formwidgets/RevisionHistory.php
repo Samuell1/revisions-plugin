@@ -61,7 +61,6 @@ class RevisionHistory extends FormWidgetBase
             $revisions = Revision::where('user_id', $revision->user_id)->where('created_at', $revision->created_at)->get();
         } else {
             $revisionIds = input('checkbox_' . $revision->id);
-            error_log(print_r($revisionIds, 1));
             $revisions = Revision::find($revisionIds);
         }
 
