@@ -1,49 +1,67 @@
 <div class="revision_history">
     <ul>
-        <?php foreach ($history as $record) { ?>
+        <?php foreach ($histories as $history) { ?>
+        <?php $record = array_first($history) ?>
         <li>
             <a data-toggle="modal" href="#history-revision-<?= $record->id ?>">
                 <i class="list-icon icon-terminal"></i>
                 <span class="title"><?= $record->created_at->format('d. m. Y H:i') ?></span>
                 <span class="description-user">
-                    <?php if ($record->user) { ?>
-                        <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
+                        <?php if ($record->user) { ?>
+                    <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
                     <?php }else{ ?>
-                        System
+                    System
                     <?php } ?>
-                </span>
+                    </span>
+                <?php foreach($history as $change) { ?>
                 <span class="description">
-                    <?= e(trans($getFieldName($record->field))) ?>:
-                    <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($record->old_value), e($record->new_value)) ?>
-                </span>
+                        <?= e(trans($getFieldName($change->field))) ?>:
+                    <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($change->old_value), e($change->new_value)) ?>
+                    </span>
+                <?php } ?>
                 <span class="borders"></span>
             </a>
 
             <div class="control-popup modal fade" id="history-revision-<?= $record->id ?>" tabindex="-1"
-                role="dialog">
+                 role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Restore change</h4>
+                            <h4 class="modal-title">Restore selected changes</h4>
                         </div>
                         <div class="modal-body">
                             <p>
                                 <?php if ($record->user) { ?>
-                                    <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
+                                <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
                                 <?php } else { ?>
-                                    System
+                                System
                                 <?php } ?>
                             </p>
-                            <h5><?= e(trans($getFieldName($record->field))) ?>:</h5>
-                            <p>
-                                <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($record->old_value), e($record->new_value)) ?>
-                            </p>
+
+
+                            <?php foreach($history as $change) { ?>
+                            <div class="form-group checkbox-field is-required">
+                                <div class="checkbox custom-checkbox">
+                                    <input name="checkbox_<?= $record->id ?>[]" value="<?= $change->id ?>" type="checkbox"
+                                           id="checkbox_<?= $change->id ?>" checked>
+                                    <label for="checkbox_<?= $change->id ?>"><?= e(trans($getFieldName($change->field))) ?></label>
+                                    <p class="help-block">
+                                        <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($record->old_value), e($change->new_value)) ?>
+                                    </p>
+                                </div>
+                            </div>
+                            <?php } ?>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" data-request="onRevertHistory"
-                                data-request-data="revision_id: <?= $record->id ?>" data-request-flash
-                                data-dismiss="modal">Restore change</button>
+                                    data-request-data="restore_all:0,revision_id:<?= $record->id ?>"
+                                    data-request-flash data-dismiss="modal">Restore selected changes
+                            </button>
+                            <button type="submit" class="btn btn-info" data-request="onRevertHistory"
+                                    data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
+                                    data-request-flash data-dismiss="modal">Restore all changes
+                            </button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                         </div>
                     </div>
