@@ -47,7 +47,7 @@
                                            id="checkbox_<?= $change->id ?>" checked>
                                     <label for="checkbox_<?= $change->id ?>"><?= e(trans($getFieldName($change->field))) ?></label>
                                     <p class="help-block">
-                                        <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($record->old_value), e($change->new_value)) ?>
+                                        <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($change->old_value), e($change->new_value)) ?>
                                     </p>
                                 </div>
                             </div>
