@@ -65,7 +65,11 @@ class RevisionHistory extends FormWidgetBase
         }
 
         foreach ($revisions as $revision) {
-            $section->{$revision->field} = $revision->old_value;
+            if ($section->isJsonable($revision->field)) {
+                $section[$revision->field] = json_decode($revision->old_value);
+            } else {
+                $section[$revision->field] = $revision->old_value;
+            }
         }
 
         $section->save();
