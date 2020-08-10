@@ -13,7 +13,7 @@ use Flash;
  */
 class RevisionHistory extends FormWidgetBase
 {
-    protected $defaultAlias = 'abcreate_eshop_revision_history';
+    protected $defaultAlias = 'samuell_revisions_revision_history';
 
     public function render()
     {
