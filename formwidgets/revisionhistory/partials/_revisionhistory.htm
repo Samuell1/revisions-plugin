@@ -5,12 +5,12 @@
         <li>
             <a data-toggle="modal" href="#history-revision-<?= $record->id ?>">
                 <i class="list-icon icon-terminal"></i>
-                <span class="title"><?= $record->created_at->format('d. m. Y H:i') ?></span>
+                <span class="title"><?= $record->created_at->locale(Lang::getLocale())->isoFormat('LLL') ?></span>
                 <span class="description-user">
                         <?php if ($record->user) { ?>
                     <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
                     <?php }else{ ?>
-                    System
+                    <?= e(trans('samuell.revisions::lang.revision.system_user')) ?>
                     <?php } ?>
                     </span>
                 <?php foreach($history as $change) { ?>
@@ -28,14 +28,14 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Restore selected changes</h4>
+                            <h4 class="modal-title"><?= e(trans('samuell.revisions::lang.revision.restore')) ?></h4>
                         </div>
                         <div class="modal-body">
                             <p>
                                 <?php if ($record->user) { ?>
                                 <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
                                 <?php } else { ?>
-                                System
+                                <?= e(trans('samuell.revisions::lang.revision.system_user')) ?>
                                 <?php } ?>
                             </p>
 
@@ -56,13 +56,17 @@
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" data-request="onRevertHistory"
                                     data-request-data="restore_all:0,revision_id:<?= $record->id ?>"
-                                    data-request-flash data-dismiss="modal">Restore selected changes
+                                    data-request-flash data-dismiss="modal">
+                                <?= e(trans('samuell.revisions::lang.revision.restore_selected')) ?>
                             </button>
                             <button type="submit" class="btn btn-info" data-request="onRevertHistory"
                                     data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
-                                    data-request-flash data-dismiss="modal">Restore all changes
+                                    data-request-flash data-dismiss="modal">
+                                <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
                             </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                <?= e(trans('backend::lang.form.cancel')) ?>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -71,3 +75,4 @@
         <?php } ?>
     </ul>
 </div>
+

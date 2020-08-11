@@ -7,6 +7,7 @@ use Backend\Classes\FormWidgetBase;
 use System\Models\Revision;
 
 use Flash;
+use Lang;
 
 /**
  * RevisionHistory Form Widget
@@ -74,7 +75,7 @@ class RevisionHistory extends FormWidgetBase
 
         $section->save();
 
-        Flash::success('Changes have been restored, changes are not visible without refreshing the page.');
+        Flash::success(Lang::get('samuell.revisions::lang.revision.restored'));
 
         // TODO REFRESH PAGE
     }
