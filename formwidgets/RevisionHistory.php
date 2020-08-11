@@ -4,7 +4,10 @@ namespace Samuell\Revisions\FormWidgets;
 
 use Backend\Classes\FormField;
 use Backend\Classes\FormWidgetBase;
+use October\Rain\Exception\ValidationException;
 use System\Models\Revision;
+use Validator;
+use Input;
 
 use Flash;
 
@@ -52,6 +55,8 @@ class RevisionHistory extends FormWidgetBase
 
     public function onRevertHistory()
     {
+        $this->validateInput();
+
         $modelClass = $this->getClass();
         $section = $modelClass::find($this->model->id);
 
@@ -60,7 +65,7 @@ class RevisionHistory extends FormWidgetBase
         if (input('restore_all')) {
             $revisions = Revision::where('user_id', $revision->user_id)->where('created_at', $revision->created_at)->get();
         } else {
-            $revisionIds = input('checkbox_' . $revision->id);
+            $revisionIds = input('revisions');
             $revisions = Revision::find($revisionIds);
         }
 
@@ -82,5 +87,18 @@ class RevisionHistory extends FormWidgetBase
     private function getClass()
     {
         return get_class($this->model);
+    }
+
+    private function validateInput()
+    {
+        $validator = Validator::make(
+            Input::all(),
+            ['revisions' => 'required_without:restore_all'],
+            ['revisions.required_without' => 'Select at least one revision to restore.']
+        );
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
     }
 }
