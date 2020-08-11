@@ -1,78 +1,90 @@
 <div class="revision_history">
     <ul>
-        <?php foreach ($histories as $history) { ?>
-        <?php $record = array_first($history) ?>
-        <li>
-            <a data-toggle="modal" href="#history-revision-<?= $record->id ?>">
-                <i class="list-icon icon-terminal"></i>
-                <span class="title"><?= $record->created_at->locale(Lang::getLocale())->isoFormat('LLL') ?></span>
-                <span class="description-user">
+        <?php foreach ($histories as $history): ?>
+            <?php $record = array_first($history) ?>
+            <li>
+                <a data-toggle="modal" href="#history-revision-<?= $record->id ?>">
+                    <i class="list-icon icon-terminal"></i>
+                    <span class="title"><?= $record->created_at->locale(Lang::getLocale())->isoFormat('LLL') ?></span>
+                    <span class="description-user">
                         <?php if ($record->user) { ?>
-                    <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
-                    <?php }else{ ?>
-                    <?= e(trans('samuell.revisions::lang.revision.system_user')) ?>
+                            <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
+                        <?php }else{ ?>
+                            <?= e(trans('samuell.revisions::lang.revision.system_user')) ?>
+                        <?php } ?>
+                    </span>
+                    <?php foreach($history as $change) { ?>
+                        <span class="description">
+                            <?= e(trans($getFieldName($change->field))) ?>:
+                            <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($change->old_value), e($change->new_value)) ?>
+                        </span>
                     <?php } ?>
-                    </span>
-                <?php foreach($history as $change) { ?>
-                <span class="description">
-                        <?= e(trans($getFieldName($change->field))) ?>:
-                    <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($change->old_value), e($change->new_value)) ?>
-                    </span>
-                <?php } ?>
-                <span class="borders"></span>
-            </a>
+                    <span class="borders"></span>
+                </a>
 
-            <div class="control-popup modal fade" id="history-revision-<?= $record->id ?>" tabindex="-1"
-                 role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title"><?= e(trans('samuell.revisions::lang.revision.restore')) ?></h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                <?php if ($record->user) { ?>
-                                <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
-                                <?php } else { ?>
-                                <?= e(trans('samuell.revisions::lang.revision.system_user')) ?>
-                                <?php } ?>
-                            </p>
+                <div class="control-popup modal fade" id="history-revision-<?= $record->id ?>" tabindex="-1"
+                     role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
-
-                            <?php foreach($history as $change) { ?>
-                            <div class="form-group checkbox-field is-required">
-                                <div class="checkbox custom-checkbox">
-                                    <input name="checkbox_<?= $record->id ?>[]" value="<?= $change->id ?>" type="checkbox"
-                                           id="checkbox_<?= $change->id ?>" checked>
-                                    <label for="checkbox_<?= $change->id ?>"><?= e(trans($getFieldName($change->field))) ?></label>
-                                    <p class="help-block">
-                                        <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($change->old_value), e($change->new_value)) ?>
-                                    </p>
-                                </div>
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">Restore selected changes</h4>
                             </div>
-                            <?php } ?>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" data-request="onRevertHistory"
-                                    data-request-data="restore_all:0,revision_id:<?= $record->id ?>"
-                                    data-request-flash data-dismiss="modal">
-                                <?= e(trans('samuell.revisions::lang.revision.restore_selected')) ?>
-                            </button>
-                            <button type="submit" class="btn btn-info" data-request="onRevertHistory"
-                                    data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
-                                    data-request-flash data-dismiss="modal">
-                                <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
-                            </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">
-                                <?= e(trans('backend::lang.form.cancel')) ?>
-                            </button>
+
+                            <form id="revision-form-<?= $record->id ?>"
+                                  data-request="onRevertHistory"
+                                  data-request-data="revision_id:<?= $record->id ?>"
+                                  data-request-success="$(this).closest('.modal').modal('hide');"
+                                  data-request-flash>
+
+                                <div class="modal-body">
+                                    <p>
+                                        <?php if ($record->user) { ?>
+                                            <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
+                                        <?php } else { ?>
+                                            <?= e(trans('samuell.revisions::lang.revision.system_user')) ?>
+                                        <?php } ?>
+                                    </p>
+
+                                    <?php foreach($history as $change) { ?>
+                                        <div class="form-group checkbox-field is-required">
+                                            <div class="checkbox custom-checkbox">
+                                                <input name="revisions[]" value="<?= $change->id ?>"
+                                                       type="checkbox" id="checkbox_<?= $change->id ?>" checked>
+                                                <label for="checkbox_<?= $change->id ?>">
+                                                    <?= e(trans($getFieldName($change->field))) ?>
+                                                </label>
+                                                <p class="help-block">
+                                                    <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($change->old_value), e($change->new_value)) ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                            </form>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary"
+                                        form="revision-form-<?= $record->id ?>">
+                                    <?= e(trans('samuell.revisions::lang.revision.restore_selected')) ?>
+                                </button>
+                                <button class="btn btn-info" data-request="onRevertHistory"
+                                        data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
+                                        data-request-flash
+                                        data-request-success="$(this).closest('.modal').modal('hide');">
+                                    <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">
+                                    <?= e(trans('backend::lang.form.cancel')) ?>
+                                </button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-            </div>
-        </li>
-        <?php } ?>
+            </li>
+        <?php endforeach ?>
     </ul>
 </div>
 
