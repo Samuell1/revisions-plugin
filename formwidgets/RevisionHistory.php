@@ -10,6 +10,7 @@ use Validator;
 use Input;
 
 use Flash;
+use Lang;
 
 /**
  * RevisionHistory Form Widget
@@ -79,7 +80,7 @@ class RevisionHistory extends FormWidgetBase
 
         $section->save();
 
-        Flash::success('Changes have been restored, changes are not visible without refreshing the page.');
+        Flash::success(Lang::get('samuell.revisions::lang.revision.changes_restored'));
 
         // TODO REFRESH PAGE
     }
