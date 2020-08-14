@@ -28,4 +28,5 @@ history:
     span: full
     disabled: true
     type: revisionhistory
+    recordsPerPage: 10
 ```
