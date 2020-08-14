@@ -17,22 +17,41 @@ use Lang;
  */
 class RevisionHistory extends FormWidgetBase
 {
+    public $recordsPerPage = null;
+
     protected $defaultAlias = 'samuell_revisions_revision_history';
+    protected $distinctRevisions;
+    protected $currentPageNumber = 1;
+    protected $showPagination = false;
+
+    public function init()
+    {
+        $this->fillFromConfig([
+            'recordsPerPage',
+        ]);
+
+        $this->showPagination = $this->recordsPerPage && $this->recordsPerPage > 0;
+    }
 
     public function render()
     {
         $this->prepareVars();
-        return $this->makePartial('revisionhistory');
+        return $this->makePartial('revisionhistory-container');
     }
 
     public function prepareVars()
     {
-        $revisionHistory = $this->model->revision_history->reverse();
-        $histories = [];
-        foreach ($revisionHistory as $history) {
-            $histories[$history->created_at . $history->user_id][] = $history;
+        $this->vars['history'] = $this->getHistory();
+        $this->vars['showPagination'] = $this->showPagination;
+
+        if ($this->showPagination) {
+            $this->vars['pageCurrent'] = $this->distinctRevisions->currentPage();
+            $this->vars['recordTotal'] = $this->distinctRevisions->total();
+            $this->vars['pageLast'] = $this->distinctRevisions->lastPage();
+            $this->vars['pageFrom'] = $this->distinctRevisions->firstItem();
+            $this->vars['pageTo'] = $this->distinctRevisions->lastItem();
         }
-        $this->vars['histories'] = $histories;
+
         $this->vars['getFieldName'] = function ($fieldName) {
             $fields = $this->parentForm->getFields();
             if (array_key_exists($fieldName, $fields)) {
@@ -83,6 +102,42 @@ class RevisionHistory extends FormWidgetBase
         Flash::success(Lang::get('samuell.revisions::lang.revision.changes_restored'));
 
         // TODO REFRESH PAGE
+    }
+
+    public function onRefresh()
+    {
+        $this->prepareVars();
+        return ['#' . $this->getId() => $this->makePartial('revisionhistory')];
+    }
+
+    public function onPaginate()
+    {
+        $this->currentPageNumber = (int)post('page');
+        return $this->onRefresh();
+    }
+
+    protected function getHistory()
+    {
+        $query = $this->model->revision_history()
+            ->groupBy('created_at', 'user_id')
+            ->orderByDesc('created_at');
+
+        if ($this->showPagination) {
+            $distinctRevisions = $this->distinctRevisions = $query->paginate($this->recordsPerPage, $this->currentPageNumber);
+        } else {
+            $distinctRevisions = $query->get();
+        }
+
+        $history = [];
+
+        foreach ($distinctRevisions as $distinctRevision) {
+            $history[] = $this->model->revision_history()
+                ->where('created_at', $distinctRevision->created_at)
+                ->where('user_id', $distinctRevision->user_id)
+                ->get();
+        }
+
+        return $history;
     }
 
     private function getClass()
