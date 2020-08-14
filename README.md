@@ -5,6 +5,8 @@ Revisions allows to extend any model with Revisionable trait. They offer more fe
 Extends OctoberCMS core trait Revisionable: https://octobercms.com/docs/database/traits#revisionable
 
 
+https://octobercms.com/plugin/samuell-revisions
+
 ## Usage
 
 Extending model with Revisions trait.
