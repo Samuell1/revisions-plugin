@@ -42,7 +42,7 @@ class Plugin extends PluginBase
     public function boot()
     {
         // Extend revision model with relations for user
-        Revision::extend(function($model){
+        Revision::extend(function ($model) {
             $model->belongsTo['user'] = ['Backend\Models\User'];
         });
     }
