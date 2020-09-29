@@ -18,6 +18,7 @@ use Lang;
 class RevisionHistory extends FormWidgetBase
 {
     public $recordsPerPage = null;
+    public $readOnly = null;
 
     protected $defaultAlias = 'samuell_revisions_revision_history';
     protected $distinctRevisions;
@@ -28,6 +29,7 @@ class RevisionHistory extends FormWidgetBase
     {
         $this->fillFromConfig([
             'recordsPerPage',
+            'readOnly',
         ]);
 
         $this->showPagination = $this->recordsPerPage && $this->recordsPerPage > 0;
@@ -75,6 +77,11 @@ class RevisionHistory extends FormWidgetBase
 
     public function onRevertHistory()
     {
+        if ($this->readOnly) {
+            Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            return;
+        }
+
         $this->validateInput();
 
         $modelClass = $this->getClass();

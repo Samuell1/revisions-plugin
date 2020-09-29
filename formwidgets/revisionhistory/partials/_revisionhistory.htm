@@ -29,7 +29,13 @@
 
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 class="modal-title"><?= e(trans('samuell.revisions::lang.revision.restore')) ?></h4>
+                                <h4 class="modal-title">
+                                    <?php if ($this->readOnly) { ?>
+                                        <?= e(trans('samuell.revisions::lang.revision.view')) ?>
+                                    <?php } else { ?>
+                                        <?= e(trans('samuell.revisions::lang.revision.restore')) ?>
+                                    <?php } ?>
+                                </h4>
                             </div>
 
                             <form id="revision-form-<?= $record->id ?>"
@@ -47,11 +53,17 @@
                                         <?php } ?>
                                     </p>
 
+                                    <p>
+                                        <?= $record->created_at->locale(Lang::getLocale())->isoFormat('LLL') ?>
+                                    </p>
+
                                     <?php foreach($revisions as $revision) { ?>
                                         <div class="form-group checkbox-field is-required">
-                                            <div class="checkbox custom-checkbox">
-                                                <input name="revisions[]" value="<?= $revision->id ?>"
-                                                       type="checkbox" id="checkbox_<?= $revision->id ?>" checked>
+                                            <div class="<?= $this->readOnly ? '' : 'checkbox custom-checkbox' ?>">
+                                                <?php if (!$this->readOnly) { ?>
+                                                    <input name="revisions[]" value="<?= $revision->id ?>"
+                                                           type="checkbox" id="checkbox_<?= $revision->id ?>" checked>
+                                                <?php } ?>
                                                 <label for="checkbox_<?= $revision->id ?>">
                                                     <?= e(trans($getFieldName($revision->field))) ?>
                                                 </label>
@@ -65,18 +77,24 @@
                             </form>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary"
-                                        form="revision-form-<?= $record->id ?>">
-                                    <?= e(trans('samuell.revisions::lang.revision.restore_selected')) ?>
-                                </button>
-                                <button class="btn btn-info" data-request="onRevertHistory"
-                                        data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
-                                        data-request-flash
-                                        data-request-success="$(this).closest('.modal').modal('hide');">
-                                    <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
-                                </button>
+                                <?php if (!$this->readOnly) { ?>
+                                    <button type="submit" class="btn btn-primary"
+                                            form="revision-form-<?= $record->id ?>">
+                                        <?= e(trans('samuell.revisions::lang.revision.restore_selected')) ?>
+                                    </button>
+                                    <button class="btn btn-info" data-request="onRevertHistory"
+                                            data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
+                                            data-request-flash
+                                            data-request-success="$(this).closest('.modal').modal('hide');">
+                                        <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
+                                    </button>
+                                <?php } ?>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">
-                                    <?= e(trans('backend::lang.form.cancel')) ?>
+                                    <?php if ($this->readOnly) { ?>
+                                        <?= e(trans('backend::lang.form.close')) ?>
+                                    <?php } else { ?>
+                                        <?= e(trans('backend::lang.form.cancel')) ?>
+                                    <?php } ?>
                                 </button>
                             </div>
 
