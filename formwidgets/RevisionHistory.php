@@ -5,6 +5,7 @@ namespace Samuell\Revisions\FormWidgets;
 use Backend\Classes\FormField;
 use Backend\Classes\FormWidgetBase;
 use October\Rain\Exception\ValidationException;
+use Samuell\Revisions\Classes\Diff;
 use System\Models\Revision;
 use Validator;
 use Input;
@@ -59,6 +60,10 @@ class RevisionHistory extends FormWidgetBase
                 return $field->label ?? $field->tab ?? $fieldName;
             }
             return $fieldName;
+        };
+
+        $this->vars['getFieldDiff'] = function ($fieldName, $oldValue, $newValue) {
+            return $this->getDiff($fieldName, $oldValue, $newValue);
         };
     }
 
@@ -156,5 +161,31 @@ class RevisionHistory extends FormWidgetBase
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
+    }
+
+    private function getDiff($fieldName, $oldValue, $newValue)
+    {
+        $fields = $this->parentForm->getFields();
+
+        if (array_key_exists($fieldName, $fields) && isset($fields[$fieldName]->config['revisions'])) {
+            $relationConfig = $fields[$fieldName]->config['revisions'];
+            $relationClass = $relationConfig['relation'];
+
+            if (method_exists($relationClass, 'withTrashed')) {
+                $oldModel = $relationClass::withTrashed()->find($oldValue);
+                $newModel = $relationClass::withTrashed()->find($newValue);
+            } else {
+                $oldModel = $relationClass::find($oldValue);
+                $newModel = $relationClass::find($newValue);
+            }
+
+            $nameFrom = $relationConfig['nameFrom'] ?? 'name';
+            return Diff::htmlDiff(
+                e($oldModel->$nameFrom ?? 'Deleted relation'),
+                e($newModel->$nameFrom ?? 'Deleted relation')
+            );
+        }
+
+        return Diff::htmlDiff(e($oldValue), e($newValue));
     }
 }
