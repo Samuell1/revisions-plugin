@@ -31,6 +31,7 @@ history:
     disabled: true
     type: revisionhistory
     recordsPerPage: 10
+    readOnly: false
 ```
 
 ### Displaying a changed relation
