@@ -16,7 +16,7 @@
                     <?php foreach($revisions as $revision) { ?>
                         <span class="description">
                             <?= e(trans($getFieldName($revision->field))) ?>:
-                            <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($revision->old_value), e($revision->new_value)) ?>
+                            <?= $getFieldDiff($revision->field, e($revision->old_value), e($revision->new_value)) ?>
                         </span>
                     <?php } ?>
                     <span class="borders"></span>
@@ -68,7 +68,7 @@
                                                     <?= e(trans($getFieldName($revision->field))) ?>
                                                 </label>
                                                 <p class="help-block">
-                                                    <?= \Samuell\Revisions\Classes\Diff::htmlDiff(e($revision->old_value), e($revision->new_value)) ?>
+                                                    <?= $getFieldDiff($revision->field, e($revision->old_value), e($revision->new_value)) ?>
                                                 </p>
                                             </div>
                                         </div>

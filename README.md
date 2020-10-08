@@ -10,7 +10,7 @@ https://octobercms.com/plugin/samuell-revisions
 ## Usage
 
 Extending model with Revisions trait.
-```
+```php
 class MyModel {
     use \Samuell\Revisions\Traits\Revisions;
 
@@ -24,7 +24,7 @@ class MyModel {
 
 Adding new widget to our form config
 
-```
+```yaml
 history:
     label: History of changes
     span: full
@@ -32,4 +32,16 @@ history:
     type: revisionhistory
     recordsPerPage: 10
     readOnly: false
+```
+
+### Displaying a changed relation
+
+By default, when you make a relation revisionable, only the changed ID will be displayed.
+To display the title or name of the relation instead, you can add the field below to the parent form.
+```yaml
+category_id:
+    hidden: true
+    revisions:
+        relation: Acme\Plugin\Models\Category
+        nameFrom: name # 'name' is the default
 ```
