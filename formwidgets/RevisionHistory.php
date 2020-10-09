@@ -195,4 +195,29 @@ class RevisionHistory extends FormWidgetBase
 
         return Diff::htmlDiff(e($oldValue), e($newValue));
     }
+
+    /**
+     * Find revision, check if exist and delete this
+     */
+    public function onDeleteRevisionById()
+    {
+        $revision = Revision::where('id', input('revision_id'))->first();
+        if ($revision) {
+            $revision->delete();
+            Flash::success('This changes successfully deleted!');
+        }
+        Flash::warning('This revision could not be found!');
+    }
+
+    /**
+     * Delete all revision by model id
+     */
+    public function onDeleteAllRevisionsByModel()
+    {
+        if($id = $this->model->id) {
+            Revision::where('revisionable_id', $id)->delete();
+            Flash::success('All changes successfully deleted!');
+        }
+        Flash::warning('This model could not be found!');
+    }
 }

@@ -1,3 +1,38 @@
+<?php if(!empty($history)) {?>
+<div class="control-toolbar">
+    <div class="toolbar-item toolbar-primary" style="float: right">
+        <div data-control="toolbar">
+            <a class="float-right btn btn-danger oc-icon-trash" data-toggle="modal" href="#delete-history">
+                <?= e(trans('samuell.revisions::lang.revision.delete_all_history')) ?>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="control-popup modal fade" id="delete-history" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"> <?= e(trans('samuell.revisions::lang.revision.delete_all_history')) ?></h4>
+            </div>
+            <div class="modal-body text-danger">
+                <p><?= e(trans('samuell.revisions::lang.revision.are_you_sure')) ?></p>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" data-request="onDeleteAllRevisionsByModel"
+                        data-request-flash data-dismiss="modal">
+                    <?= e(trans('samuell.revisions::lang.revision.yes_delete')) ?>
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <?= e(trans('backend::lang.form.close')) ?>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>
+
 <div class="revision_history">
     <ul>
         <?php foreach ($history as $revisions): ?>
@@ -87,6 +122,11 @@
                                             data-request-flash
                                             data-request-success="$(this).closest('.modal').modal('hide');">
                                         <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
+                                    </button>
+                                    <button type="submit" class="btn btn-danger" data-request="onDeleteRevisionById"
+                                            data-request-data="revision_id:<?= $record->id ?>"
+                                            data-request-flash data-dismiss="modal">
+                                        <?= e(trans('samuell.revisions::lang.revision.delete_revision')) ?>
                                     </button>
                                 <?php } ?>
                                 <button type="button" class="btn btn-default" data-dismiss="modal">
