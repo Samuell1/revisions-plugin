@@ -201,10 +201,12 @@ class RevisionHistory extends FormWidgetBase
      */
     public function onDeleteRevisionById()
     {
+        $this->ifReadOnlyChecker();
         $revision = Revision::where('id', input('revision_id'))->first();
         if ($revision) {
             $revision->delete();
             Flash::success('This changes successfully deleted!');
+            return;
         }
         Flash::warning('This revision could not be found!');
     }
@@ -214,10 +216,20 @@ class RevisionHistory extends FormWidgetBase
      */
     public function onDeleteAllRevisionsByModel()
     {
+        $this->ifReadOnlyChecker();
         if($id = $this->model->id) {
             Revision::where('revisionable_id', $id)->delete();
             Flash::success('All changes successfully deleted!');
+            return;
         }
         Flash::warning('This model could not be found!');
+    }
+
+    private function ifReadOnlyChecker()
+    {
+        if ($this->readOnly) {
+            Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            return;
+        }
     }
 }

@@ -1,4 +1,4 @@
-<?php if(!empty($history)) {?>
+<?php if(!empty($history) && $this->readOnly) {?>
 <div class="control-toolbar">
     <div class="toolbar-item toolbar-primary" style="float: right">
         <div data-control="toolbar">
@@ -57,8 +57,7 @@
                     <span class="borders"></span>
                 </a>
 
-                <div class="control-popup modal fade" id="history-revision-<?= $record->id ?>" tabindex="-1"
-                     role="dialog">
+                <div class="control-popup modal fade" id="history-revision-<?= $record->id ?>" tabindex="-1" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content">
 
