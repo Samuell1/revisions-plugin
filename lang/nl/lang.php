@@ -14,4 +14,10 @@ return [
         'are_you_sure' => 'Weet u zeker dat u alle geschiedenis van dit model wilt verwijderen? Dit kan niet worden teruggedraaid!',
         'yes_delete' => 'Ja, alles verwijderen!',
     ],
+    'messages' => [
+        'successfully_deleted'     => 'Deze wijzigingen zijn succesvol verwijderd!',
+        'all_successfully_deleted' => 'Alle wijzigingen zijn verwijderd!',
+        'revision_not_found'       => 'Deze revisie is niet gevonden!',
+        'model_not_found'          => 'Revisies voor dit model zijn niet gevonden!',
+    ],
 ];

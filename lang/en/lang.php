@@ -14,4 +14,10 @@ return [
         'are_you_sure' => 'Are you sure to delete all history of this model? This cannot be reversed!',
         'yes_delete' => 'Yes, delete all!',
     ],
+    'messages' => [
+        'successfully_deleted'     => 'This changes successfully deleted!',
+        'all_successfully_deleted' => 'All changes successfully deleted!',
+        'revision_not_found'       => 'This revision could not be found!',
+        'model_not_found'          => 'Revisions for this model could not be found!',
+    ],
 ];
