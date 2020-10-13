@@ -62,6 +62,7 @@
             data-request-success="$(this).closest('.modal').modal('hide');">
         <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
     </button>
+    <div><br></div>
     <button type="submit" class="btn btn-danger btn-sm" data-request="onDeleteRevisionById"
             data-request-data="revision_id:<?= $record->id ?>"
             data-request-flash data-dismiss="modal">

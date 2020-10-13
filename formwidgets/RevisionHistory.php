@@ -86,8 +86,8 @@ class RevisionHistory extends FormWidgetBase
     public function onRevertHistory()
     {
         if ($this->readOnly) {
-            return $this->returnFlashMessage('error',
-                Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            return;
         }
         $this->validateInput();
         $modelClass = $this->getClass();
@@ -108,8 +108,7 @@ class RevisionHistory extends FormWidgetBase
             }
         }
         $section->save();
-        $this->returnFlashMessage('success',
-            Lang::get('samuell.revisions::lang.revision.changes_restored'));
+        Flash::success(Lang::get('samuell.revisions::lang.revision.changes_restored'));
         // TODO REFRESH PAGE
     }
 
@@ -130,11 +129,9 @@ class RevisionHistory extends FormWidgetBase
         $query = $this->model->revision_history()
             ->groupBy('created_at', 'user_id')
             ->orderByDesc('created_at');
-
-        if($historyId) {
+        if ($historyId) {
             $query->where('id', $historyId);
         }
-
         if ($this->showPagination) {
             $distinctRevisions = $this->distinctRevisions =
                 $query->paginate($this->recordsPerPage, $this->currentPageNumber);
@@ -198,16 +195,14 @@ class RevisionHistory extends FormWidgetBase
     public function onDeleteRevisionById()
     {
         if ($this->readOnly) {
-            return $this->returnFlashMessage('error',
-                Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            Flash::success(Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            return;
         }
         if ($revision = Revision::where('id', input('revision_id'))->first()) {
             $revision->delete();
-            $this->returnFlashMessage('success',
-                Lang::get('samuell.revisions::lang.messages.successfully_deleted'));
+            Flash::success(Lang::get('samuell.revisions::lang.messages.successfully_deleted'));
         } else {
-            $this->returnFlashMessage('warning',
-                Lang::get('samuell.revisions::lang.messages.revision_not_found'));
+            Flash::warning(Lang::get('samuell.revisions::lang.messages.revision_not_found'));
         }
         return;
     }
@@ -220,23 +215,16 @@ class RevisionHistory extends FormWidgetBase
     public function onDeleteAllRevisionsByModel()
     {
         if ($this->readOnly) {
-            return $this->returnFlashMessage('error',
-                Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            return;
         }
         if ($id = $this->model->id) {
             Revision::where('revisionable_id', $id)->delete();
-            $this->returnFlashMessage('success',
-                Lang::get('samuell.revisions::lang.messages.all_successfully_deleted'));
+            Flash::success(Lang::get('samuell.revisions::lang.messages.all_successfully_deleted'));
         } else {
-            $this->returnFlashMessage('warning',
-                Lang::get('samuell.revisions::lang.messages.model_not_found'));
+            Flash::warning(Lang::get('samuell.revisions::lang.messages.model_not_found'));
         }
         return;
-    }
-
-    private function returnFlashMessage($type, $message)
-    {
-        return Flash::$type($message);
     }
 
     public function onLoadRevision()
