@@ -204,8 +204,10 @@ class RevisionHistory extends FormWidgetBase
         } else {
             Flash::warning(Lang::get('samuell.revisions::lang.messages.revision_not_found'));
         }
-        $this->refreshWidgetPartialAfterUpdate();
-        return;
+        $this->prepareVars();
+        return [
+            '#RevisionHistory-formHistory-history' => $this->makePartial('revisionhistory-container')
+        ];
     }
 
     /**
@@ -225,8 +227,10 @@ class RevisionHistory extends FormWidgetBase
         } else {
             Flash::warning(Lang::get('samuell.revisions::lang.messages.model_not_found'));
         }
-        $this->refreshWidgetPartialAfterUpdate();
-        return;
+        $this->prepareVars();
+        return [
+            '#RevisionHistory-formHistory-history' => $this->makePartial('revisionhistory-container')
+        ];
     }
 
     public function onLoadRevision()
@@ -235,13 +239,5 @@ class RevisionHistory extends FormWidgetBase
         $this->getDataFieldName();
         $this->getDataFieldDiff();
         return $this->makePartial('revision_model');
-    }
-
-    private function refreshWidgetPartialAfterUpdate()
-    {
-        $this->prepareVars();
-        return [
-            '#RevisionHistory-formHistory-history' => $this->makePartial('revisionhistory-container')
-        ];
     }
 }
