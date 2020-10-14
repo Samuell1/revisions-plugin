@@ -195,7 +195,7 @@ class RevisionHistory extends FormWidgetBase
     public function onDeleteRevisionById()
     {
         if ($this->readOnly) {
-            Flash::success(Lang::get('samuell.revisions::lang.revision.read_only_error'));
+            Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
             return;
         }
         if ($revision = Revision::where('id', input('revision_id'))->first()) {
