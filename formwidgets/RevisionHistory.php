@@ -168,24 +168,44 @@ class RevisionHistory extends FormWidgetBase
     private function getDiff($fieldName, $oldValue, $newValue)
     {
         $fields = $this->parentForm->getFields();
-        if (array_key_exists($fieldName, $fields)
-            && isset($fields[$fieldName]->config['revisions'])
-        ) {
-            $relationConfig = $fields[$fieldName]->config['revisions'];
-            $relationClass = $relationConfig['relation'];
-            if (method_exists($relationClass, 'withTrashed')) {
-                $oldModel = $relationClass::withTrashed()->find($oldValue);
-                $newModel = $relationClass::withTrashed()->find($newValue);
-            } else {
-                $oldModel = $relationClass::find($oldValue);
-                $newModel = $relationClass::find($newValue);
+        if (array_key_exists($fieldName, $fields)) {
+            $field = $fields[$fieldName];
+            if (isset($field->config['revisions'])) {
+                return $this->getRelationDiff($field, $oldValue, $newValue);
             }
-            $nameFrom = $relationConfig['nameFrom'] ?? 'name';
-            return Diff::htmlDiff(
-                e($oldModel->$nameFrom ?? 'Deleted relation'),
-                e($newModel->$nameFrom ?? 'Deleted relation')
-            );
+            if (isset($field->config['type']) && $field->config['type'] === 'switch') {
+                return $this->getBooleanDiff($field, $oldValue, $newValue);
+            }
         }
+        return Diff::htmlDiff(e($oldValue), e($newValue));
+    }
+
+    private function getRelationDiff($field, $oldValue, $newValue)
+    {
+        $relationConfig = $field->config['revisions'];
+        $relationClass = $relationConfig['relation'];
+        if (method_exists($relationClass, 'withTrashed')) {
+            $oldModel = $relationClass::withTrashed()->find($oldValue);
+            $newModel = $relationClass::withTrashed()->find($newValue);
+        } else {
+            $oldModel = $relationClass::find($oldValue);
+            $newModel = $relationClass::find($newValue);
+        }
+        $nameFrom = $relationConfig['nameFrom'] ?? 'name';
+        return Diff::htmlDiff(
+            e($oldModel->$nameFrom ?? 'Deleted relation'),
+            e($newModel->$nameFrom ?? 'Deleted relation')
+        );
+    }
+
+    private function getBooleanDiff($field, $oldValue, $newValue)
+    {
+        $onLabel = isset($field->config['on']) ? Lang::get($field->config['on'])
+            : Lang::get('backend::lang.form.field_on');
+        $offLabel = isset($field->config['on']) ? Lang::get($field->config['off'])
+            : Lang::get('backend::lang.form.field_off');
+        $oldValue = $oldValue ? $onLabel : $offLabel;
+        $newValue = $newValue ? $onLabel : $offLabel;
         return Diff::htmlDiff(e($oldValue), e($newValue));
     }
 
