@@ -34,8 +34,6 @@ trait Revisions
 
     public function getRevisionableUser()
     {
-        return BackendAuth::getUser()
-            ? BackendAuth::getUser()->id
-            : null;
+        return BackendAuth::getUser() ? BackendAuth::getUser()->id : null;
     }
 }
