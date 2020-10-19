@@ -224,7 +224,10 @@ class RevisionHistory extends FormWidgetBase
         } else {
             Flash::warning(Lang::get('samuell.revisions::lang.messages.revision_not_found'));
         }
-        return;
+        $this->prepareVars();
+        return [
+            '#RevisionHistory-formHistory-history' => $this->makePartial('revisionhistory-container')
+        ];
     }
 
     /**
@@ -244,7 +247,10 @@ class RevisionHistory extends FormWidgetBase
         } else {
             Flash::warning(Lang::get('samuell.revisions::lang.messages.model_not_found'));
         }
-        return;
+        $this->prepareVars();
+        return [
+            '#RevisionHistory-formHistory-history' => $this->makePartial('revisionhistory-container')
+        ];
     }
 
     public function onLoadRevision()
