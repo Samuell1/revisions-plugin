@@ -2,6 +2,7 @@
 
 use Backend\Classes\FormField;
 use Backend\Classes\FormWidgetBase;
+use Illuminate\Support\Facades\DB;
 use October\Rain\Exception\ValidationException;
 use Samuell\Revisions\Classes\Diff;
 use System\Models\Revision;
@@ -219,7 +220,10 @@ class RevisionHistory extends FormWidgetBase
             return;
         }
         if ($revision = Revision::where('id', input('revision_id'))->first()) {
-            $revision->delete();
+            Db::table('system_revisions')->where([
+                ['revisionable_id', $revision->revisionable_id],
+                ['created_at', $revision->created_at],
+            ])->delete();
             Flash::success(Lang::get('samuell.revisions::lang.messages.successfully_deleted'));
         } else {
             Flash::warning(Lang::get('samuell.revisions::lang.messages.revision_not_found'));
