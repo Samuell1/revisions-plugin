@@ -1,5 +1,6 @@
 1.0.1: First version of Revisions
-1.2.0:
+1.2.0: 
+  - "!!! Requires Octobercms 1.1.x"
   - Add pagination
   - Add option to deleted by selected revisions
   - Add better diffs for boolean (switch) fields
