@@ -1,6 +1,7 @@
 <?php namespace Samuell\Revisions;
 
 use Backend;
+use Lang;
 use System\Classes\PluginBase;
 use System\Models\Revision;
 
@@ -41,9 +42,18 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
-        // Extend revision model with relations for user
         Revision::extend(function ($model) {
+            // Extend revision model with relations for user
             $model->belongsTo['user'] = ['Backend\Models\User'];
+
+            // Add method to get formatted date that is compatible with Carbon 1 & 2
+            $model->addDynamicMethod('getFormattedDate', function ($date) use ($model) {
+                if (method_exists($model->$date, 'isoFormat')) {
+                    return $model->$date->locale(Lang::getLocale())->isoFormat('LLL');
+                } else {
+                    return $model->$date->format('d. m. Y H:i');
+                }
+            });
         });
     }
 

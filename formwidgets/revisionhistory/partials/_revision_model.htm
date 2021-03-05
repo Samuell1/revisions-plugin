@@ -29,7 +29,7 @@
             </p>
 
             <p>
-                <?= $record->created_at->locale(Lang::getLocale())->isoFormat('LLL') ?>
+                <?= $record->getFormattedDate('created_at') ?>
             </p>
 
             <?php foreach($revisions as $revision) { ?>
