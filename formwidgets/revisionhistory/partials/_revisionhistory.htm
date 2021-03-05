@@ -41,7 +41,7 @@
                 <a data-control="popup" data-handler="onLoadRevision" data-extra-data="revision_id: <?= $record->id ?>"
                    href="javascript:;" data-size="giant">
                     <i class="list-icon icon-terminal"></i>
-                    <span class="title"><?= $record->created_at->locale(Lang::getLocale())->isoFormat('LLL') ?></span>
+                    <span class="title"><?= $record->getFormattedDate('created_at') ?></span>
                     <span class="description-user">
                         <?php if ($record->user) { ?>
                             <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
