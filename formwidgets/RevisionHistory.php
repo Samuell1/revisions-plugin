@@ -177,6 +177,9 @@ class RevisionHistory extends FormWidgetBase
             if (isset($field->config['type']) && $field->config['type'] === 'switch') {
                 return $this->getBooleanDiff($field, $oldValue, $newValue);
             }
+            if (isset($field->config['options']) ) {
+                return $this->getOptionsDiff($field, $oldValue, $newValue);
+            }
         }
         return Diff::htmlDiff(e($oldValue), e($newValue));
     }
@@ -207,6 +210,28 @@ class RevisionHistory extends FormWidgetBase
             : Lang::get('backend::lang.form.field_off');
         $oldValue = $oldValue ? $onLabel : $offLabel;
         $newValue = $newValue ? $onLabel : $offLabel;
+        return Diff::htmlDiff(e($oldValue), e($newValue));
+    }
+    
+    private function getOptionsDiff($field, $oldValue, $newValue)
+    {
+        $optionConfig = $field->config['options']; 
+
+        $oldValue = explode(",",preg_replace("/[^,.0-9]/", '', $oldValue));
+        $newValue = explode(",",preg_replace("/[^,.0-9]/", '', $newValue));
+        $old ='';
+        $new =''; 
+        
+        foreach ($oldValue as $item){ 
+            $old .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;  
+        } 
+        foreach ($newValue as $item){   
+            $new .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;  
+        } 
+         
+        $oldValue = $old;
+        $newValue = $new; 
+        
         return Diff::htmlDiff(e($oldValue), e($newValue));
     }
 
