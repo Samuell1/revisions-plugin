@@ -134,6 +134,7 @@ class RevisionHistory extends FormWidgetBase
     protected function getHistory($historyId = null)
     {
         $query = $this->model->revision_history()
+            ->select('system_revisions.user_id', 'system_revisions.created_at')
             ->groupBy('created_at', 'user_id')
             ->orderByDesc('created_at');
 
