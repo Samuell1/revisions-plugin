@@ -1,4 +1,6 @@
-<?php namespace Samuell\Revisions\Traits;
+<?php
+
+namespace Samuell\Revisions\Traits;
 
 use BackendAuth;
 use Exception;

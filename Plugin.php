@@ -1,6 +1,7 @@
-<?php namespace Samuell\Revisions;
+<?php
 
-use Backend;
+namespace Samuell\Revisions;
+
 use Lang;
 use System\Classes\PluginBase;
 use System\Models\Revision;
@@ -32,7 +33,6 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-
     }
 
     /**

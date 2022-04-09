@@ -1,4 +1,6 @@
-<?php namespace Samuell\Revisions\Classes;
+<?php
+
+namespace Samuell\Revisions\Classes;
 
 class Diff
 {

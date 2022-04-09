@@ -1,4 +1,6 @@
-<?php namespace Samuell\Revisions\FormWidgets;
+<?php
+
+namespace Samuell\Revisions\FormWidgets;
 
 use Backend\Classes\FormField;
 use Backend\Classes\FormWidgetBase;
@@ -114,7 +116,7 @@ class RevisionHistory extends FormWidgetBase
         $section->save();
 
         Flash::success(Lang::get('samuell.revisions::lang.revision.changes_restored'));
-        // TODO REFRESH PAGE
+        // TODO: REFRESH PAGE
     }
 
     public function onRefresh()
@@ -189,7 +191,7 @@ class RevisionHistory extends FormWidgetBase
                 return $this->getBooleanDiff($field, $oldValue, $newValue);
             }
 
-            if (isset($field->config['options']) ) {
+            if (isset($field->config['options'])) {
                 return $this->getOptionsDiff($field, $oldValue, $newValue);
             }
         }
@@ -240,10 +242,10 @@ class RevisionHistory extends FormWidgetBase
         $new = '';
 
         foreach ($oldValue as $item) {
-            $old .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;
+            $old .= isset($optionConfig[$item]) ? $optionConfig[$item] . ' • ' : '';
         }
         foreach ($newValue as $item) {
-            $new .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;
+            $new .= isset($optionConfig[$item]) ? $optionConfig[$item] . ' • ' : '';
         }
 
         $oldValue = $old;
