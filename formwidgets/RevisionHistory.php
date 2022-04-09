@@ -94,6 +94,7 @@ class RevisionHistory extends FormWidgetBase
         $modelClass = $this->getClass();
         $section = $modelClass::find($this->model->id);
         $revision = Revision::find(input('revision_id'));
+
         if (input('restore_all')) {
             $revisions = Revision::where('user_id', $revision->user_id)
                 ->where('created_at', $revision->created_at)->get();
@@ -101,6 +102,7 @@ class RevisionHistory extends FormWidgetBase
             $revisionIds = input('revisions');
             $revisions = Revision::find($revisionIds);
         }
+
         foreach ($revisions as $revision) {
             if ($section->isJsonable($revision->field)) {
                 $section[$revision->field] = json_decode($revision->old_value);
@@ -108,7 +110,9 @@ class RevisionHistory extends FormWidgetBase
                 $section[$revision->field] = $revision->old_value;
             }
         }
+
         $section->save();
+
         Flash::success(Lang::get('samuell.revisions::lang.revision.changes_restored'));
         // TODO REFRESH PAGE
     }
@@ -130,15 +134,18 @@ class RevisionHistory extends FormWidgetBase
         $query = $this->model->revision_history()
             ->groupBy('created_at', 'user_id')
             ->orderByDesc('created_at');
+
         if ($historyId) {
             $query->where('id', $historyId);
         }
+
         if ($this->showPagination) {
             $distinctRevisions = $this->distinctRevisions =
                 $query->paginate($this->recordsPerPage, $this->currentPageNumber);
         } else {
             $distinctRevisions = $query->get();
         }
+
         $history = [];
         foreach ($distinctRevisions as $distinctRevision) {
             $history[] = $this->model->revision_history()
@@ -146,6 +153,7 @@ class RevisionHistory extends FormWidgetBase
                 ->where('user_id', $distinctRevision->user_id)
                 ->get();
         }
+
         return $history;
     }
 
@@ -169,25 +177,32 @@ class RevisionHistory extends FormWidgetBase
     private function getDiff($fieldName, $oldValue, $newValue)
     {
         $fields = $this->parentForm->getFields();
+
         if (array_key_exists($fieldName, $fields)) {
             $field = $fields[$fieldName];
+
             if (isset($field->config['revisions'])) {
                 return $this->getRelationDiff($field, $oldValue, $newValue);
             }
+
             if (isset($field->config['type']) && $field->config['type'] === 'switch') {
                 return $this->getBooleanDiff($field, $oldValue, $newValue);
             }
+
             if (isset($field->config['options']) ) {
                 return $this->getOptionsDiff($field, $oldValue, $newValue);
             }
         }
+
         return Diff::htmlDiff(e($oldValue), e($newValue));
     }
 
     private function getRelationDiff($field, $oldValue, $newValue)
     {
+
         $relationConfig = $field->config['revisions'];
         $relationClass = $relationConfig['relation'];
+
         if (method_exists($relationClass, 'withTrashed')) {
             $oldModel = $relationClass::withTrashed()->find($oldValue);
             $newModel = $relationClass::withTrashed()->find($newValue);
@@ -195,7 +210,9 @@ class RevisionHistory extends FormWidgetBase
             $oldModel = $relationClass::find($oldValue);
             $newModel = $relationClass::find($newValue);
         }
+
         $nameFrom = $relationConfig['nameFrom'] ?? 'name';
+
         return Diff::htmlDiff(
             e($oldModel->$nameFrom ?? 'Deleted relation'),
             e($newModel->$nameFrom ?? 'Deleted relation')
@@ -212,26 +229,26 @@ class RevisionHistory extends FormWidgetBase
         $newValue = $newValue ? $onLabel : $offLabel;
         return Diff::htmlDiff(e($oldValue), e($newValue));
     }
-    
+
     private function getOptionsDiff($field, $oldValue, $newValue)
     {
-        $optionConfig = $field->config['options']; 
+        $optionConfig = $field->config['options'];
 
-        $oldValue = explode(",",preg_replace("/[^,.0-9]/", '', $oldValue));
-        $newValue = explode(",",preg_replace("/[^,.0-9]/", '', $newValue));
-        $old ='';
-        $new =''; 
-        
-        foreach ($oldValue as $item){ 
-            $old .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;  
-        } 
-        foreach ($newValue as $item){   
-            $new .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;  
-        } 
-         
+        $oldValue = explode(',', preg_replace("/[^,.0-9]/", '', $oldValue));
+        $newValue = explode(',', preg_replace("/[^,.0-9]/", '', $newValue));
+        $old = '';
+        $new = '';
+
+        foreach ($oldValue as $item) {
+            $old .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;
+        }
+        foreach ($newValue as $item) {
+            $new .= isset($optionConfig[$item]) ? $optionConfig[$item].' • ' : '' ;
+        }
+
         $oldValue = $old;
-        $newValue = $new; 
-        
+        $newValue = $new;
+
         return Diff::htmlDiff(e($oldValue), e($newValue));
     }
 
@@ -244,6 +261,7 @@ class RevisionHistory extends FormWidgetBase
             Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
             return;
         }
+
         if ($revision = Revision::where('id', input('revision_id'))->first()) {
             Db::table('system_revisions')->where([
                 ['revisionable_id', $revision->revisionable_id],
@@ -253,7 +271,9 @@ class RevisionHistory extends FormWidgetBase
         } else {
             Flash::warning(Lang::get('samuell.revisions::lang.messages.revision_not_found'));
         }
+
         $this->prepareVars();
+
         return [
             '#RevisionHistory-formHistory-history' => $this->makePartial('revisionhistory-container')
         ];
@@ -270,13 +290,17 @@ class RevisionHistory extends FormWidgetBase
             Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
             return;
         }
+
         if ($id = $this->model->id) {
             Revision::where('revisionable_id', $id)->delete();
+
             Flash::success(Lang::get('samuell.revisions::lang.messages.all_successfully_deleted'));
         } else {
             Flash::warning(Lang::get('samuell.revisions::lang.messages.model_not_found'));
         }
+
         $this->prepareVars();
+
         return [
             '#RevisionHistory-formHistory-history' => $this->makePartial('revisionhistory-container')
         ];
@@ -285,8 +309,10 @@ class RevisionHistory extends FormWidgetBase
     public function onLoadRevision()
     {
         $this->vars['history'] = $this->getHistory(post('revision_id'));
+
         $this->getDataFieldName();
         $this->getDataFieldDiff();
+
         return $this->makePartial('revision_model');
     }
 }
