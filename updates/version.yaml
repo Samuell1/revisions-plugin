@@ -4,3 +4,7 @@
   - Add option to deleted by selected revisions
   - Add better diffs for boolean (switch) fields
   - Group revisions by user
+1.2.1:
+  - Fix strict groupBy
+  - Fix checkboxes
+  - Add confirms for actions
