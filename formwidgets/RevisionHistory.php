@@ -32,6 +32,7 @@ class RevisionHistory extends FormWidgetBase
             'recordsPerPage',
             'readOnly',
         ]);
+
         $this->showPagination = $this->recordsPerPage && $this->recordsPerPage > 0;
     }
 
@@ -45,6 +46,7 @@ class RevisionHistory extends FormWidgetBase
     {
         $this->vars['history'] = $this->getHistory();
         $this->vars['showPagination'] = $this->showPagination;
+
         if ($this->showPagination) {
             $this->vars['pageCurrent'] = $this->distinctRevisions->currentPage();
             $this->vars['recordTotal'] = $this->distinctRevisions->total();
@@ -52,6 +54,7 @@ class RevisionHistory extends FormWidgetBase
             $this->vars['pageFrom'] = $this->distinctRevisions->firstItem();
             $this->vars['pageTo'] = $this->distinctRevisions->lastItem();
         }
+
         $this->getDataFieldName();
         $this->getDataFieldDiff();
     }
@@ -92,6 +95,7 @@ class RevisionHistory extends FormWidgetBase
             Flash::error(Lang::get('samuell.revisions::lang.revision.read_only_error'));
             return;
         }
+
         $this->validateInput();
         $modelClass = $this->getClass();
         $section = $modelClass::find($this->model->id);
@@ -116,7 +120,8 @@ class RevisionHistory extends FormWidgetBase
         $section->save();
 
         Flash::success(Lang::get('samuell.revisions::lang.revision.changes_restored'));
-        // TODO: REFRESH PAGE
+
+        return redirect()->refresh();
     }
 
     public function onRefresh()

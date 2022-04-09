@@ -9,37 +9,37 @@
             <?= e(trans('samuell.revisions::lang.revision.view')) ?>
             <?php } else { ?>
             <?= e(trans('samuell.revisions::lang.revision.restore')) ?>
-            <?php } ?>
+            <?php } ?>:
+            <?= $record->getFormattedDate('created_at') ?>
         </h4>
     </div>
 
-    <form id="revision-form-<?= $record->id ?>"
-          data-request="onRevertHistory"
-          data-request-data="revision_id:<?= $record->id ?>"
-          data-request-success="$(this).closest('.modal').modal('hide');"
-          data-request-flash>
+    <form id="revision-form-<?= $record->id ?>" data-request="onRevertHistory"
+        data-request-data="revision_id:<?= $record->id ?>"
+        data-request-success="$(this).closest('.modal').modal('hide');" data-request-flash>
 
         <div class="modal-body">
             <p>
+                <b>
+                    <?= e(trans('samuell.revisions::lang.revision.changed_by')) ?>:
+                </b>
                 <?php if ($record->user) { ?>
-                <?= e($record->user->first_name) ?> <?= e($record->user->last_name) ?>
+                <?= e($record->user->first_name) ?>
+                <?= e($record->user->last_name) ?>
                 <?php } else { ?>
                 <?= e(trans('samuell.revisions::lang.revision.system_user')) ?>
                 <?php } ?>
             </p>
 
-            <p>
-                <?= $record->getFormattedDate('created_at') ?>
-            </p>
 
             <?php foreach($revisions as $revision) { ?>
-            <div class="form-group checkbox-field is-required">
+            <div class="form-group checkbox custom-checkbox is-required">
                 <div class="<?= $this->readOnly ? '' : 'checkbox custom-checkbox' ?>">
                     <?php if (!$this->readOnly) { ?>
-                    <input name="revisions[]" value="<?= $revision->id ?>"
-                           type="checkbox" id="checkbox_<?= $revision->id ?>" checked>
+                    <input name="revisions[]" value="<?= $revision->id ?>" type="checkbox"
+                        id="checkbox_<?= $revision->id ?>" checked>
                     <?php } ?>
-                    <label for="checkbox_<?= $revision->id ?>">
+                    <label for="checkbox_<?= $revision->id ?>" class="storm-icon-pseudo">
                         <?= e(trans($getFieldName($revision->field))) ?>
                     </label>
                     <p class="help-block">
@@ -53,24 +53,30 @@
 
     <div class="modal-footer">
         <?php if (!$this->readOnly) { ?>
-        <button type="submit" class="btn btn-primary btn-sm"
-                form="revision-form-<?= $record->id ?>">
-            <?= e(trans('samuell.revisions::lang.revision.restore_selected')) ?>
-        </button>
-        <button class="btn btn-info btn-sm" data-request="onRevertHistory"
-                data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
-                data-request-flash
-                data-request-success="$(this).closest('.modal').modal('hide');">
-            <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
-        </button>
-        <div><br></div>
-        <button type="submit" class="btn btn-danger btn-sm" data-request="onDeleteRevisionById"
-                data-request-data="revision_id:<?= $record->id ?>"
-                data-request-flash data-dismiss="modal">
-            <?= e(trans('samuell.revisions::lang.revision.delete_revision')) ?>
-        </button>
+            <button type="submit"
+                    class="btn btn-primary"
+                    form="revision-form-<?= $record->id ?>"
+                    data-request-confirm="<?= e(trans('samuell.revisions::lang.revision.restore_selected_confirm')) ?>">
+                <?= e(trans('samuell.revisions::lang.revision.restore_selected')) ?>
+            </button>
+            <button class="btn btn-info"
+                    data-request="onRevertHistory"
+                    data-request-data="restore_all:1,revision_id:<?= $record->id ?>"
+                    data-request-flash
+                    data-request-success="$(this).closest('.modal').modal('hide');"
+                    data-request-confirm="<?= e(trans('samuell.revisions::lang.revision.restore_all_confirm')) ?>">
+                <?= e(trans('samuell.revisions::lang.revision.restore_all')) ?>
+            </button>
+            <button type="submit"
+                    class="btn btn-danger"
+                    data-request="onDeleteRevisionById"
+                    data-request-data="revision_id:<?= $record->id ?>"
+                    data-request-flash data-dismiss="modal"
+                    data-request-confirm="<?= e(trans('samuell.revisions::lang.revision.delete_revision_confirm')) ?>">
+                <?= e(trans('samuell.revisions::lang.revision.delete_revision')) ?>
+            </button>
         <?php } ?>
-        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
             <?php if ($this->readOnly) { ?>
             <?= e(trans('backend::lang.form.close')) ?>
             <?php } else { ?>
