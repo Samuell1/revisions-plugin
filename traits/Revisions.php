@@ -4,34 +4,19 @@ namespace Samuell\Revisions\Traits;
 
 use BackendAuth;
 use Exception;
+use System\Models\Revision;
+use October\Rain\Database\Traits\Revisionable;
 
 /**
  * Extend model with revision methods
  */
 trait Revisions
 {
-    use \October\Rain\Database\Traits\Revisionable;
+    use Revisionable;
 
-    public static function bootRevisionable()
+    public static function initializeRevisionable()
     {
-        if (!property_exists(get_called_class(), 'revisionable')) {
-            throw new Exception(sprintf(
-                'You must define a $revisionable property in %s to use the Revisionable trait.',
-                get_called_class()
-            ));
-        }
-
-        static::extend(function ($model) {
-            $model->morphMany['revision_history'] = ['System\Models\Revision', 'name' => 'revisionable'];
-
-            $model->bindEvent('model.afterUpdate', function () use ($model) {
-                $model->revisionableAfterUpdate();
-            });
-
-            $model->bindEvent('model.afterDelete', function () use ($model) {
-                $model->revisionableAfterDelete();
-            });
-        });
+        $this->morphMany['revision_history'] = [Revision::class, 'name' => 'revisionable'];
     }
 
     public function getRevisionableUser()
